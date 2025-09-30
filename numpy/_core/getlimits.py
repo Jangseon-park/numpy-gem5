@@ -227,13 +227,14 @@ def _register_known_types():
     _float_ma[64] = float64_ma
 
     # Known parameters for IEEE 754 128-bit binary float
-    ld = ntypes.longdouble
-    epsneg_f128 = exp2(ld(-113))
-    tiny_f128 = exp2(ld(-16382))
+    try:
+        ld = ntypes.longdouble
+        epsneg_f128 = exp2(ld(-113))
+        tiny_f128 = exp2(ld(-16382))
     # Ignore runtime error when this is not f128
-    with numeric.errstate(all='ignore'):
-        huge_f128 = (ld(1) - epsneg_f128) / tiny_f128 * ld(4)
-    float128_ma = MachArLike(ld,
+        with numeric.errstate(all='ignore'):
+            huge_f128 = (ld(1) - epsneg_f128) / tiny_f128 * ld(4)
+        float128_ma = MachArLike(ld,
                              machep=-112,
                              negep=-113,
                              minexp=-16382,
@@ -248,34 +249,39 @@ def _register_known_types():
                              huge=huge_f128,
                              tiny=tiny_f128)
     # IEEE 754 128-bit binary float
-    _register_type(float128_ma,
-        b'\x9a\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\xfb\xbf')
-    _float_ma[128] = float128_ma
-
+        _register_type(float128_ma,
+            b'\x9a\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\xfb\xbf')
+        _float_ma[128] = float128_ma
+    except:
+        print("128-bit binary float not supported")
+        pass
     # Known parameters for float80 (Intel 80-bit extended precision)
-    epsneg_f80 = exp2(ld(-64))
-    tiny_f80 = exp2(ld(-16382))
-    # Ignore runtime error when this is not f80
-    with numeric.errstate(all='ignore'):
-        huge_f80 = (ld(1) - epsneg_f80) / tiny_f80 * ld(4)
-    float80_ma = MachArLike(ld,
-                            machep=-63,
-                            negep=-64,
-                            minexp=-16382,
-                            maxexp=16384,
-                            it=63,
-                            iexp=15,
-                            ibeta=2,
-                            irnd=5,
-                            ngrd=0,
-                            eps=exp2(ld(-63)),
-                            epsneg=epsneg_f80,
-                            huge=huge_f80,
-                            tiny=tiny_f80)
-    # float80, first 10 bytes containing actual storage
-    _register_type(float80_ma, b'\xcd\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xfb\xbf')
-    _float_ma[80] = float80_ma
-
+    try:
+        epsneg_f80 = exp2(ld(-64))
+        tiny_f80 = exp2(ld(-16382))
+        # Ignore runtime error when this is not f80
+        with numeric.errstate(all='ignore'):
+            huge_f80 = (ld(1) - epsneg_f80) / tiny_f80 * ld(4)
+        float80_ma = MachArLike(ld,
+                                machep=-63,
+                                negep=-64,
+                                minexp=-16382,
+                                maxexp=16384,
+                                it=63,
+                                iexp=15,
+                                ibeta=2,
+                                irnd=5,
+                                ngrd=0,
+                                eps=exp2(ld(-63)),
+                                epsneg=epsneg_f80,
+                                huge=huge_f80,
+                                tiny=tiny_f80)
+        # float80, first 10 bytes containing actual storage
+        _register_type(float80_ma, b'\xcd\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xfb\xbf')
+        _float_ma[80] = float80_ma
+    except:
+        print("80-bit extended precision not supported")
+        pass
     # Guessed / known parameters for double double; see:
     # https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#Double-double_arithmetic
     # These numbers have the same exponent range as float64, but extended

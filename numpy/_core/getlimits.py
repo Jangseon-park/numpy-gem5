@@ -228,6 +228,8 @@ def _register_known_types():
 
     # Known parameters for IEEE 754 128-bit binary float
     try:
+        # make exception to pass here
+        raise Exception("128-bit binary float not supported")
         ld = ntypes.longdouble
         epsneg_f128 = exp2(ld(-113))
         tiny_f128 = exp2(ld(-16382))
@@ -257,6 +259,8 @@ def _register_known_types():
         pass
     # Known parameters for float80 (Intel 80-bit extended precision)
     try:
+        # make exception to pass here
+        raise Exception("80-bit extended precision not supported")
         epsneg_f80 = exp2(ld(-64))
         tiny_f80 = exp2(ld(-16382))
         # Ignore runtime error when this is not f80
@@ -287,6 +291,8 @@ def _register_known_types():
     # These numbers have the same exponent range as float64, but extended
     # number of digits in the significand.
     try:
+        # make exception to pass here
+        raise Exception("Double double not supported")
         huge_dd = nextafter(ld(inf), ld(0), dtype=ld)
         # As the smallest_normal in double double is so hard to calculate we set
         # it to NaN.

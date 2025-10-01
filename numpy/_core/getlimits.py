@@ -252,7 +252,7 @@ def _register_known_types():
         _register_type(float128_ma,
             b'\x9a\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\xfb\xbf')
         _float_ma[128] = float128_ma
-    except:
+    except Exception:
         print("128-bit binary float not supported")
         pass
     # Known parameters for float80 (Intel 80-bit extended precision)
@@ -279,7 +279,7 @@ def _register_known_types():
         # float80, first 10 bytes containing actual storage
         _register_type(float80_ma, b'\xcd\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xfb\xbf')
         _float_ma[80] = float80_ma
-    except:
+    except Exception:
         print("80-bit extended precision not supported")
         pass
     # Guessed / known parameters for double double; see:

@@ -286,34 +286,38 @@ def _register_known_types():
     # https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#Double-double_arithmetic
     # These numbers have the same exponent range as float64, but extended
     # number of digits in the significand.
-    huge_dd = nextafter(ld(inf), ld(0), dtype=ld)
-    # As the smallest_normal in double double is so hard to calculate we set
-    # it to NaN.
-    smallest_normal_dd = nan
-    # Leave the same value for the smallest subnormal as double
-    smallest_subnormal_dd = ld(nextafter(0., 1.))
-    float_dd_ma = MachArLike(ld,
-                             machep=-105,
-                             negep=-106,
-                             minexp=-1022,
-                             maxexp=1024,
-                             it=105,
-                             iexp=11,
-                             ibeta=2,
-                             irnd=5,
-                             ngrd=0,
-                             eps=exp2(ld(-105)),
-                             epsneg=exp2(ld(-106)),
-                             huge=huge_dd,
-                             tiny=smallest_normal_dd,
-                             smallest_subnormal=smallest_subnormal_dd)
-    # double double; low, high order (e.g. PPC 64)
-    _register_type(float_dd_ma,
-        b'\x9a\x99\x99\x99\x99\x99Y<\x9a\x99\x99\x99\x99\x99\xb9\xbf')
-    # double double; high, low order (e.g. PPC 64 le)
-    _register_type(float_dd_ma,
-        b'\x9a\x99\x99\x99\x99\x99\xb9\xbf\x9a\x99\x99\x99\x99\x99Y<')
-    _float_ma['dd'] = float_dd_ma
+    try:
+        huge_dd = nextafter(ld(inf), ld(0), dtype=ld)
+        # As the smallest_normal in double double is so hard to calculate we set
+        # it to NaN.
+        smallest_normal_dd = nan
+        # Leave the same value for the smallest subnormal as double
+        smallest_subnormal_dd = ld(nextafter(0., 1.))
+        float_dd_ma = MachArLike(ld,
+                                 machep=-105,
+                                 negep=-106,
+                                 minexp=-1022,
+                                 maxexp=1024,
+                                 it=105,
+                                 iexp=11,
+                                 ibeta=2,
+                                 irnd=5,
+                                 ngrd=0,
+                                 eps=exp2(ld(-105)),
+                                 epsneg=exp2(ld(-106)),
+                                 huge=huge_dd,
+                                 tiny=smallest_normal_dd,
+                                 smallest_subnormal=smallest_subnormal_dd)
+        # double double; low, high order (e.g. PPC 64)
+        _register_type(float_dd_ma,
+            b'\x9a\x99\x99\x99\x99\x99Y<\x9a\x99\x99\x99\x99\x99\xb9\xbf')
+        # double double; high, low order (e.g. PPC 64 le)
+        _register_type(float_dd_ma,
+            b'\x9a\x99\x99\x99\x99\x99\xb9\xbf\x9a\x99\x99\x99\x99\x99Y<')
+        _float_ma['dd'] = float_dd_ma
+    except Exception:
+        print("Double-double precision not supported")
+        pass
 
 
 def _get_machar(ftype):
